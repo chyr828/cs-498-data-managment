@@ -1,0 +1,59 @@
+const mysql = require('mysql2');
+const express = require('express');
+const bodyparser = require('body-parser');
+var connection = mysql.createConnection({
+             host : 'localhost',
+             user : 'master',
+             password : 'masterpass',
+             database : 'mydb',
+});
+connection.connect();
+const app = express();
+app.use(bodyparser.json());   
+app.get('/greeting',(req,res)=>{
+              res.send('Hello World!');
+});
+app.post('/register' ,(req,res) => {
+console.log(req.body.Username)
+  let n = req.body.Username;
+  n = n.replace(/^[0-9\s]*|[+*\r\n]/g,'');
+console.log('Test',n) 
+ res.json({'Test':n});
+  query = `INSERT INTO Users (Username) VALUES ('`+n+`');`;
+  connection.query(query,(e,r,f)=> {
+  console.log(r);
+//  res.json({'successful':r});
+});
+query_log = `INSERT INTO Log (Username) VALUES ('`+n+`');`;
+  connection.query(query_log,(e,r,f)=> {
+});
+  });
+
+app.get('/list',(req,res)=>{
+query = 'SELECT Username FROM Users;';
+connection.query(query,(e,r,f)=>{
+//console.log(r);
+//res.send({'Users' : r.Username});
+const usernames = [];
+Object.keys(r).forEach(function(key) {
+      var row = r[key];
+      console.log(row.Username)
+      usernames.push(row.Username)
+      //res.send({'users' : row.Username});
+})
+res.json({'Users' : usernames});
+});
+  });
+
+app.post('/clear' ,(req,res)=>{
+query = `DELETE FROM Users ;`;                  
+connection.query(query,(e,r,f)=>{
+console.log(r);
+res.send({'success':r});
+  });
+});
+var http = require('http').Server(app);
+const PORT = 80;
+http.listen(PORT , function(){
+        console.log('listening');
+});
