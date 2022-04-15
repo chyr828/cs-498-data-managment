@@ -1,0 +1,26 @@
+my code is in this file itself
+
+part 1:
+import findspark
+findspark.init()
+import pyspark
+import sys
+if len(sys.argv) !=3:
+          raise Exception("exactyl 2 args required")
+inputUri =sys.argv[1]
+outputUri=sys.argv[2]
+def mymap(x):
+  y = len(x)
+  return(y,1)
+def myred(v1,v2):
+  return v1+v2
+sc = pyspark.SparkContext()
+print("Spark initialized")
+lines =sc.textFile(sys.argv[1])
+sentcounts =dict(lines.map(mymap).reduceByKey(myred))
+print(type(sentcounts))
+print("operation complete")
+sentcounts.saveAsTextFile(sys.argv[2])
+print("output saved as file")
+
+part2:
