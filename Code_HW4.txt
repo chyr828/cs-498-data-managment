@@ -1,1 +1,47 @@
 my code for connections and hiveql queries are both here
+
+
+
+const express = require('express');
+const bodyparser = require('body-parser');
+const app = express();
+app.use(bodyparser.json());
+   
+app.post('/trends',(req,res)=>{
+    let y = req.body.term;
+  const spawn = require("child_process").spawn;
+const pythonProcess = spawn('python',["q3.py",y]);
+ 
+pythonProcess.stdout.on('data', (data) => {
+    res.send(data);
+}); 
+});
+app.post('/results' ,(req,res)=>{
+  let n = req.body.term;
+   
+const spawn = require("child_process").spawn;
+const pythonProcess = spawn('python',["q1.py", n ]);
+ 
+pythonProcess.stdout.on('data', (data) => {
+    res.send(data);
+});
+ });
+app.post('/popularity' ,(req,res)=>{
+  let z = req.body.url;
+  const spawn = require("child_process").spawn;
+const pythonProcess = spawn('python',["q2.py",z]);
+    res.send(data);
+}); 
+});
+app.post('/getBestTerms',(req,res)=>{
+    let y = req.body.website;
+  const spawn = require("child_process").spawn;
+const pythonProcess = spawn('python',["q4.py",y]);
+ 
+pythonProcess.stdout.on('data', (data) => {
+    res.send(data);
+}); 
+});
+var http = require('http').Server(app);
+const PORT = 80;
+
